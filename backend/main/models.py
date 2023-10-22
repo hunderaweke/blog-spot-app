@@ -7,9 +7,10 @@ from django.contrib.auth.models import (
 )
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
+from main.abstract.models import AbstractManager, AbstractModel
 
 
-class UserManager(BaseUserManager):
+class UserManager(BaseUserManager, AbstractManager):
     def get_object_by_public_id(self, public_id):
         try:
             instance = self.get(public_id=public_id)
@@ -46,7 +47,7 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractModel, AbstractBaseUser, PermissionsMixin):
     public_id = models.UUIDField(
         db_index=True, unique=True, default=uuid.uuid4, editable=False
     )
@@ -70,8 +71,20 @@ class User(AbstractBaseUser, PermissionsMixin):
         return f"{self.first_name} {self.last_name}"
 
 
-class Blog(models.Model):
+class BlogManager(AbstractManager):
+    pass
+
+
+class Blog(AbstractModel):
     title = models.CharField(max_length=255)
     body = models.TextField()
-    author = models.ForeignKey(User, on_delete=models.PROTECT)
+    author = models.ForeignKey(to=User, on_delete=models.PROTECT)
     created = models.DateTimeField(auto_now=True)
+    edited = models.BooleanField(default=False)
+    objects = BlogManager()
+
+    def __str__(self):
+        return self.author.name
+
+    class Meta:
+        db_table = "blog"

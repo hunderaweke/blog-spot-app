@@ -12,6 +12,7 @@ djangorestframework = "^3.14.0"
 bpython = "^0.24"
 djangorestframework-simplejwt = "^5.3.0"
 django-filter = "^23.3"
+django-cors-headers = "^4.3.0"
 
 
 [build-system]
