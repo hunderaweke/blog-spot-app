@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Victor+Mono:wght@200;500;600;700&display=swap');
+@import url("https://api.fontshare.com/v2/css?f[]=general-sans@1&display=swap" );
+.container{
+    padding-top: 8rem;
+    font-family: 'General Sans', sans-serif;
+}
+.input{
+    width: 25rem !important;
+    font-weight: 500 !important;
+    padding: 0.4rem;
+}
+@media (max-width:760px) {
+    .input{
+        max-width:25rem !important;
+    }
+}
+label{
+    font-weight: 600;
+}
