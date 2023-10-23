@@ -80,8 +80,10 @@ class Blog(AbstractModel):
     body = models.TextField()
     author = models.ForeignKey(to=User, on_delete=models.PROTECT)
     created = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_now_add=True)
     edited = models.BooleanField(default=False)
     objects = BlogManager()
+    REQUIRED_FIELDS = ["body", "title"]
 
     def __str__(self):
         return self.author.name

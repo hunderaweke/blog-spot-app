@@ -1,10 +1,31 @@
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import (
+    AllowAny,
+    IsAuthenticated,
+    BasePermission,
+    SAFE_METHODS,
+)
 from rest_framework.views import Response
 from rest_framework import status
 from main.models import *
 from main.serializers import *
 from main.abstract.viewsets import AbstractViewSet
 from django.http import HttpRequest
+
+
+class UserPermission(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.user.is_anonymous:
+            return request.method in SAFE_METHODS
+        if view.basename in ["post"]:
+            return bool(request.user and request.user.is_authenticated)
+        return False
+
+    def has_permission(self, request, view):
+        if view.basename in ["post"]:
+            if request.user.is_anonymous:
+                return request.method in SAFE_METHODS
+            return bool(request.user and request.user.is_authenticated)
+        return False
 
 
 class UserViewSet(AbstractViewSet):
@@ -24,7 +45,7 @@ class UserViewSet(AbstractViewSet):
 
 
 class BlogViewSet(AbstractViewSet):
-    http_method_names = ("post", "patch", "get")
+    http_method_names = ("post", "put", "get", "delete")
     permission_classes = (AllowAny,)
     serializer_class = BlogSerializer
 
@@ -41,9 +62,3 @@ class BlogViewSet(AbstractViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    def update(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)

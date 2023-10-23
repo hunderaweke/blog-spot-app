@@ -38,7 +38,15 @@ class BlogSerializer(AbstractSerializer):
         rep["author"] = UserSerializer(author).data
         return rep
 
+    def update(self, instance, validated_data):
+        if not instance.edited:
+            validated_data["edited"] = True
+
+        instance = super().update(instance, validated_data)
+
+        return instance
+
     class Meta:
         model = Blog
-        fields = ["id", "author", "body", "created", "edited"]
-        read_only_fields = ["created", "edited"]
+        fields = ["id", "title", "author", "body", "created", "updated", "edited"]
+        read_only_fields = ["created", "edited", "updated"]
