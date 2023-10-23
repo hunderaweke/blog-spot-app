@@ -1,6 +1,6 @@
 import { Container } from "react-bootstrap";
 import * as z from "zod";
-import styles from "./signup.module.css";
+import styles from "../styles/signup.module.css";
 import { FieldValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";

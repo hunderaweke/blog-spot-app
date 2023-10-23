@@ -1,6 +1,6 @@
 import { Container } from "react-bootstrap";
 import * as z from "zod";
-import styles from "./login.module.css";
+import styles from "../styles/login.module.css";
 import { FieldValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -24,11 +24,9 @@ function Login() {
   } = useForm<FormData>({ resolver: zodResolver(schema) });
   const onSubmit = (data: FieldValues) => {
     try {
-      axios
-        .post("http://127.0.0.1:8000/api/auth/login/", data)
-        .then((res) => {
-          localStorage.setItem("refresh", res.data.refresh);
-        });
+      axios.post("http://127.0.0.1:8000/api/auth/login/", data).then((res) => {
+        localStorage.setItem("refresh", res.data.refresh);
+      });
     } catch (error) {
       console.log(error);
     }
