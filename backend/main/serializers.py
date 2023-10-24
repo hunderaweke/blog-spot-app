@@ -13,6 +13,7 @@ class UserSerializer(AbstractSerializer):
         model = User
         fields = [
             "id",
+            "avatar",
             "first_name",
             "last_name",
             "email",
@@ -29,7 +30,7 @@ class BlogSerializer(AbstractSerializer):
 
     def validate_author(self, value):
         if self.context["request"].user != value:
-            raise ValueError("You cannot create a blog for another user.")
+            raise ValueError("You cannot create/edit a blog for another user.")
         return value
 
     def to_representation(self, instance):
@@ -41,12 +42,20 @@ class BlogSerializer(AbstractSerializer):
     def update(self, instance, validated_data):
         if not instance.edited:
             validated_data["edited"] = True
-
         instance = super().update(instance, validated_data)
 
         return instance
 
     class Meta:
         model = Blog
-        fields = ["id", "title", "author", "body", "created", "updated", "edited"]
-        read_only_fields = ["created", "edited", "updated"]
+        fields = [
+            "id",
+            "title",
+            "photo",
+            "author",
+            "body",
+            "created",
+            "updated",
+            "edited",
+        ]
+        read_only_fields = ["created", "edited", "updated", "author"]

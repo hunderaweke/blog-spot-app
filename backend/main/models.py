@@ -10,6 +10,10 @@ from django.http import Http404
 from main.abstract.models import AbstractManager, AbstractModel
 
 
+def upload_to(instance, filename):
+    return "images/{filename}".format(filename=filename)
+
+
 class UserManager(BaseUserManager, AbstractManager):
     def get_object_by_public_id(self, public_id):
         try:
@@ -54,6 +58,7 @@ class User(AbstractModel, AbstractBaseUser, PermissionsMixin):
     username = models.CharField(db_index=True, unique=True, max_length=255)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
+    avatar = models.ImageField(upload_to=upload_to, blank=True)
     email = models.EmailField(db_index=True, unique=True)
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=True)
@@ -77,13 +82,14 @@ class BlogManager(AbstractManager):
 
 class Blog(AbstractModel):
     title = models.CharField(max_length=255)
+    photo = models.ImageField(upload_to=upload_to, blank=True)
     body = models.TextField()
     author = models.ForeignKey(to=User, on_delete=models.PROTECT)
     created = models.DateTimeField(auto_now=True)
     updated = models.DateTimeField(auto_now_add=True)
     edited = models.BooleanField(default=False)
     objects = BlogManager()
-    REQUIRED_FIELDS = ["body", "title"]
+    REQUIRED_FIELDS = ["body", "title", "photo"]
 
     def __str__(self):
         return self.author.name

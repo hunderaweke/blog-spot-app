@@ -1,6 +1,5 @@
 from rest_framework.permissions import (
     AllowAny,
-    IsAuthenticated,
     BasePermission,
     SAFE_METHODS,
 )
@@ -9,14 +8,20 @@ from rest_framework import status
 from main.models import *
 from main.serializers import *
 from main.abstract.viewsets import AbstractViewSet
-from django.http import HttpRequest
+
+
+class IsOwnerOrReadOnlyBlog(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in SAFE_METHODS:
+            return True
+        return obj.author == request.user
 
 
 class UserPermission(BasePermission):
     def has_object_permission(self, request, view, obj):
-        if request.user.is_anonymous:
+        if request.user.is_anonymous or request.method in SAFE_METHODS:
             return request.method in SAFE_METHODS
-        if view.basename in ["post"]:
+        if view.basename in ["post", "put"]:
             return bool(request.user and request.user.is_authenticated)
         return False
 
@@ -29,8 +34,8 @@ class UserPermission(BasePermission):
 
 
 class UserViewSet(AbstractViewSet):
-    http_method_names = ("patch", "get")
-    permission_classes = (AllowAny,)
+    http_method_names = ("put", "get")
+    permission_classes = (UserPermission,)
     serializer_class = UserSerializer
 
     def get_queryset(self):
@@ -46,7 +51,7 @@ class UserViewSet(AbstractViewSet):
 
 class BlogViewSet(AbstractViewSet):
     http_method_names = ("post", "put", "get", "delete")
-    permission_classes = (AllowAny,)
+    permission_classes = (IsOwnerOrReadOnlyBlog,)
     serializer_class = BlogSerializer
 
     def get_queryset(self):
