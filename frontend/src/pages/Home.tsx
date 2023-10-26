@@ -31,6 +31,7 @@ const Home = () => {
         {blogs?.map((blog) => (
           <BlogCard
             key={blog.id}
+            id={blog.id}
             title={blog.title}
             author={blog.author.first_name}
             body={blog.body}

@@ -4,6 +4,7 @@ import styles from "../styles/login.module.css";
 import { FieldValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { useNavigate } from "react-router";
 const schema = z.object({
   email: z
     .string({ required_error: "Email is required" })
@@ -22,10 +23,15 @@ function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
+  const navigate = useNavigate();
   const onSubmit = (data: FieldValues) => {
     try {
       axios.post("http://127.0.0.1:8000/api/auth/login/", data).then((res) => {
+        navigate("/");
         localStorage.setItem("refresh", res.data.refresh);
+        localStorage.setItem("access", res.data.access);
+        localStorage.setItem("public_id", res.data.user.id);
+        localStorage.setItem("logged_in", "true");
       });
     } catch (error) {
       console.log(error);
