@@ -1,6 +1,7 @@
 from rest_framework.permissions import (
     AllowAny,
     BasePermission,
+    IsAuthenticatedOrReadOnly,
     SAFE_METHODS,
 )
 from rest_framework.views import Response
@@ -19,16 +20,16 @@ class IsOwnerOrReadOnlyBlog(BasePermission):
 
 class UserPermission(BasePermission):
     def has_object_permission(self, request, view, obj):
-        if request.user.is_anonymous or request.method in SAFE_METHODS:
-            return request.method in SAFE_METHODS
-        if view.basename in ["post", "put"]:
+        if request.method in SAFE_METHODS:
+            return True
+        if request.method in ["PUT", "POST"]:
             return bool(request.user and request.user.is_authenticated)
         return False
 
     def has_permission(self, request, view):
-        if view.basename in ["post"]:
-            if request.user.is_anonymous:
-                return request.method in SAFE_METHODS
+        if request.method in SAFE_METHODS:
+            return True
+        if request.method in ["PUT", "POST"]:
             return bool(request.user and request.user.is_authenticated)
         return False
 
