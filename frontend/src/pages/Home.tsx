@@ -17,11 +17,12 @@ interface blog {
   created: string;
   edited: boolean;
   updated: string;
+  photo: string;
 }
 const Home = () => {
   const [blogs, setBlogs] = useState<blog[]>();
   useEffect(() => {
-    axios.get<blog[]>("http://127.0.0.1:8000/api/blog/").then((res) => {
+    axios.get<blog[]>("http://10.240.69.158:8000/api/blog/").then((res) => {
       setBlogs(res.data);
     });
   }, []);
@@ -32,7 +33,9 @@ const Home = () => {
           <BlogCard
             key={blog.id}
             id={blog.id}
+            photo={blog.photo}
             title={blog.title}
+            authorId={blog.author.id}
             author={blog.author.first_name}
             body={blog.body}
           ></BlogCard>

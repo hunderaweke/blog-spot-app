@@ -23,16 +23,20 @@ function Blog() {
   const { id } = useParams();
   const [blogData, setBlogData] = useState<blogType>();
   useEffect(() => {
-    axios.get<blogType>(`http://127.0.0.1:8000/api/blog/${id}`).then((res) => {
-      setBlogData(res.data);
-    });
+    axios
+      .get<blogType>(`http://10.240.69.158:8000/api/blog/${id}`)
+      .then((res) => {
+        setBlogData(res.data);
+      });
   }, [id]);
   return (
     <>
-      <img src={blogData?.photo} alt="" />
-      <Container className="text-left">
-        <h1>{blogData?.title}</h1>
-        <p>{blogData?.body}</p>
+      <Container>
+        <img src={blogData?.photo} alt="" className={`img-thumbnail h-25`} />
+        <Container className="text-left">
+          <h1>{blogData?.title}</h1>
+          <p>{blogData?.body}</p>
+        </Container>
       </Container>
     </>
   );

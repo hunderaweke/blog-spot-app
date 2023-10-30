@@ -12,7 +12,7 @@ const schema = z.object({
     .min(4, { message: "Must be atleast 4 characters" }),
   password: z
     .string({ required_error: "Password is required" })
-    .min(8, { message: "Must be at least 8 characters" }),
+    .min(4, { message: "Must be at least 8 characters" }),
 });
 type FormData = z.infer<typeof schema>;
 
@@ -26,13 +26,14 @@ function Login() {
   const navigate = useNavigate();
   const onSubmit = (data: FieldValues) => {
     try {
-      axios.post("http://127.0.0.1:8000/api/auth/login/", data).then((res) => {
-        navigate("/");
-        localStorage.setItem("refresh", res.data.refresh);
-        localStorage.setItem("access", res.data.access);
-        localStorage.setItem("public_id", res.data.user.id);
-        localStorage.setItem("logged_in", "true");
-      });
+      axios
+        .post("http://10.240.69.158:8000/api/auth/login/", data)
+        .then((res) => {
+          navigate("/");
+          localStorage.setItem("refresh", res.data.refresh);
+          localStorage.setItem("public_id", res.data.user.id);
+          localStorage.setItem("logged_in", "true");
+        });
     } catch (error) {
       console.log(error);
     }

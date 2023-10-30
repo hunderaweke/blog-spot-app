@@ -34,10 +34,11 @@ function SignUp() {
   const onSubmit = (data: FieldValues) => {
     try {
       axios
-        .post("http://127.0.0.1:8000/api/auth/register/", data)
+        .post("http://10.240.69.158:8000/api/auth/register/", data)
         .then((res) => {
           console.log(res.data);
           localStorage.setItem("refresh", res.data.refresh);
+          localStorage.setItem("public_id", res.data.user.id);
         });
     } catch (error) {
       console.log(error);

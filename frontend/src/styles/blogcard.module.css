@@ -1,0 +1,11 @@
+.cardContainer{
+    width: 35rem;
+    overflow-y: hidden;
+    padding-bottom: 5rem;
+    text-overflow: ellipsis;
+}
+.cardBody{
+    height: 10rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
